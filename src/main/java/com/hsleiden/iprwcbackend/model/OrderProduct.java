@@ -32,7 +32,7 @@ public class OrderProduct {
     private BigDecimal productPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order")
+    @JoinColumn(name = "`order`")
     private Order order;
 
     @ManyToOne(fetch = FetchType.EAGER)
