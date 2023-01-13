@@ -1,5 +1,6 @@
 package com.hsleiden.iprwcbackend.security;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,7 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .authorizeHttpRequests()
+                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/user/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user/all").hasRole("ADMIN")
