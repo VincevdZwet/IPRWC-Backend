@@ -20,7 +20,7 @@ public class ProductController {
 
     @GetMapping("/all")
     public Product[] getAllProducts() {
-        return productRepo.findAll().toArray(new Product[0]);
+        return productRepo.findByEnabled(true).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND"));
     }
 
     @GetMapping("/{id}")
@@ -33,6 +33,10 @@ public class ProductController {
     @ResponseBody
     public Product createProduct(@RequestBody Product product) {
         try {
+            if (product.getTitle().isEmpty() || product.getImageUrl().isEmpty()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PRODUCT_DETAILS_MISSING");
+            }
+
             if (productRepo.findByTitle(product.getTitle()) != null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "TITLE_EXISTS");
             }
@@ -61,6 +65,8 @@ public class ProductController {
     @ResponseBody
     public void deleteProduct(@PathVariable(value = "id") UUID id) {
         Product productToDelete = productRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND"));
-        productRepo.delete(productToDelete);
+
+        productToDelete.setEnabled(false);
+        productRepo.save(productToDelete);
     }
 }

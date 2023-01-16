@@ -17,4 +17,5 @@ public interface ProductRepo extends JpaRepository<Product, UUID> {
     Optional<Product[]> findById(Product product);
     @Query(value = "SELECT DISTINCT * FROM iprwc.product WHERE title LIKE :productTitle", nativeQuery = true)
     Product findByTitle(@Param("productTitle") String title);
+    Optional<Product[]> findByEnabled(boolean enabled);
 }

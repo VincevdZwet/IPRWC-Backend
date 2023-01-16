@@ -32,6 +32,17 @@ public class AuthController {
     @ResponseBody
     public Map<String, Object> register(@RequestBody User user) {
         try {
+            if (user.getFirstname().isEmpty() || user.getLastname().isEmpty()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "USER_DETAILS_MISSING");
+            }
+
+            if (user.getPassword() != null && user.getPassword().length() <= 7){
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "PSWD_SHORT"
+                );
+            }
+
             // Check if the email already exists
             if (userRepo.findByEmail(user.getEmail()).isPresent()) {
                 throw new ResponseStatusException(
@@ -39,6 +50,7 @@ public class AuthController {
                         "EMAIL_EXISTS"
                 );
             }
+
             String encodedPass = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPass);
             user = userRepo.save(user);
