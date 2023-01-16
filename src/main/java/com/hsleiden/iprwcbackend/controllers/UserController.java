@@ -24,7 +24,8 @@ public class UserController {
     @PostMapping("/{id}")
     @ResponseBody
     public User updateUser(@PathVariable(value = "id") UUID id, @RequestBody User user) {
-        if (authorizationService.getLoggedInUser().getId() == id || authorizationService.getLoggedInUser().getRole() == User.Role.ADMIN) {
+        User loggedInUser = authorizationService.getLoggedInUser();
+        if (loggedInUser.getId().equals(id)) {
             User userToUpdate = userRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"));
 
             // Update fields that are given

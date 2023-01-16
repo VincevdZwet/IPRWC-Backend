@@ -32,12 +32,8 @@ public class OrderController {
     public Order[] getAllOrders() {
         User loggedInUser = authorizationService.getLoggedInUser();
 
-        if (loggedInUser.getRole() != User.Role.ADMIN) {
-            Set<Order> orders = loggedInUser.getOrders();
-            return orders.toArray(new Order[0]);
-        }
-
-        return orderRepo.findAll().toArray(new Order[0]);
+        Set<Order> orders = loggedInUser.getOrders();
+        return orders.toArray(new Order[0]);
     }
 
     @PutMapping("/")
