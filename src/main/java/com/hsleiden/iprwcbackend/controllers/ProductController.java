@@ -3,6 +3,7 @@ package com.hsleiden.iprwcbackend.controllers;
 import com.hsleiden.iprwcbackend.model.Product;
 import com.hsleiden.iprwcbackend.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,7 +32,15 @@ public class ProductController {
     @PutMapping("/")
     @ResponseBody
     public Product createProduct(@RequestBody Product product) {
-        return productRepo.save(product);
+        try {
+            if (productRepo.findByTitle(product.getTitle()) != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "TITLE_EXISTS");
+            }
+
+            return productRepo.save(product);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PRODUCT_DETAILS_MISSING");
+        }
     }
 
     @PostMapping("/{id}")

@@ -47,12 +47,16 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "users/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/product/all").permitAll()
                 .requestMatchers("/product/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/order/all").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/order/").authenticated()
+                .requestMatchers(HttpMethod.GET, "/cart/all").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/cart/").authenticated()
                 .and()
                 .userDetailsService(uds)
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                                response.sendError(HttpServletResponse.SC_NOT_FOUND, "NOT_FOUND")
                 )
                 .and()
                 .sessionManagement()

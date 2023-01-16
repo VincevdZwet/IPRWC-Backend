@@ -34,24 +34,26 @@ public class User {
     @JdbcTypeCode(Types.VARCHAR)
     private UUID id = UUID.randomUUID();
 
+    @Column(nullable = false)
     private String firstname;
 
+    @Column(nullable = false)
     private String lastname;
 
     private Date birthdate;
 
     private String gender;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @JsonIgnore
     private boolean enabled = true;
 
-    @Column(nullable = false)
     private Role role = Role.USER;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")

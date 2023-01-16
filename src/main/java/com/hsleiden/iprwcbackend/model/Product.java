@@ -30,19 +30,30 @@ public class Product {
     @JdbcTypeCode(Types.VARCHAR)
     private UUID id = UUID.randomUUID();
 
-    @Column(unique = true)
+
+    @Column(unique = true, nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private Date releaseDate;
+
+    @Column(nullable = false)
     private String duration;
+
+    @Column(nullable = false)
     private String imageUrl;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
     @JsonIgnore
     private boolean enabled = true;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private Set<OrderProduct> orderProducts;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "products")
     private Set<Cart> carts;
 }
