@@ -23,17 +23,11 @@ public class ProductController {
         return productRepo.findByEnabled(true).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND"));
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public Product getProductById(@PathVariable(value = "id") UUID id) {
-        return productRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND"));
-    }
-
     @PutMapping("/")
     @ResponseBody
     public Product createProduct(@RequestBody Product product) {
         try {
-            if (product.getTitle().isEmpty() || product.getImageUrl().isEmpty()){
+            if (product.getTitle().isEmpty() || product.getImageUrl().isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PRODUCT_DETAILS_MISSING");
             }
 

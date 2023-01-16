@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/order")
@@ -38,16 +40,10 @@ public class OrderController {
         return orderRepo.findAll().toArray(new Order[0]);
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public Order getOrderById(@PathVariable(value = "id") UUID id) {
-        return orderRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
-    }
-
     @PutMapping("/")
     @ResponseBody
     public Order createOrder(@RequestBody Order order) {
-        if (order.getEmailSentTo().isBlank() || order.getEmailSentTo().isEmpty() || !order.isValidBank(order.getBank())){
+        if (order.getEmailSentTo().isBlank() || order.getEmailSentTo().isEmpty() || !order.isValidBank(order.getBank())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ORDER_DETAILS_MISSING");
         }
 

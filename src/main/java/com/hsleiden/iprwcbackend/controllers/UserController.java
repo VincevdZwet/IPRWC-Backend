@@ -21,33 +21,12 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/all")
-    @ResponseBody
-    public User[] getAllUsers() {
-        return userRepo.findAll().toArray(new User[0]);
-    }
-
-    @GetMapping("/me")
-    @ResponseBody
-    public User getLoggedInUser() {
-        return authorizationService.getLoggedInUser();
-    }
-
-    @GetMapping("/{id}")
-    @ResponseBody
-    public User getUserById(@PathVariable(value = "id") UUID id) {
-        // Check if user is looking for himself
-        if (authorizationService.getLoggedInUser().getId() == id || authorizationService.getLoggedInUser().getRole() == User.Role.ADMIN) {
-            return userRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"));
-        }
-        return null;
-    }
-
     @PostMapping("/{id}")
     @ResponseBody
     public User updateUser(@PathVariable(value = "id") UUID id, @RequestBody User user) {
         if (authorizationService.getLoggedInUser().getId() == id || authorizationService.getLoggedInUser().getRole() == User.Role.ADMIN) {
             User userToUpdate = userRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"));
+
             // Update fields that are given
             if (user.getFirstname() != null) userToUpdate.setFirstname(user.getFirstname());
             if (user.getLastname() != null) userToUpdate.setLastname(user.getLastname());
@@ -62,13 +41,5 @@ public class UserController {
             return userRepo.save(userToUpdate);
         }
         return null;
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    public void deleteUser(@PathVariable(value = "id") UUID id) {
-        User userToDelete = userRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"));
-
-        userRepo.delete(userToDelete);
     }
 }

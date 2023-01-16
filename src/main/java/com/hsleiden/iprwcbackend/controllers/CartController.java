@@ -36,17 +36,20 @@ public class CartController {
     @ResponseBody
     public void saveCart(@RequestBody Cart cart) {
         User loggedInUser = authorizationService.getLoggedInUser();
-        cartRepo.findById(loggedInUser.getCart().getId())
-                .ifPresentOrElse(
-                        cartToUpdate -> {
-                            if (cart.getProducts() != null) cartToUpdate.setProducts(cart.getProducts());
 
-                            cartRepo.save(cartToUpdate);
-                        },
-                        () -> {
-                            cart.setUser(loggedInUser);
-                            cartRepo.save(cart);
-                        }
-                );
+        if (loggedInUser.getCart() != null) {
+            cartRepo.findById(loggedInUser.getCart().getId()).ifPresent(
+                    cartToUpdate -> {
+                        if (cart.getProducts() != null) cartToUpdate.setProducts(cart.getProducts());
+                        cartRepo.save(cartToUpdate);
+                    }
+            );
+        } else {
+            Cart newCart = new Cart();
+            newCart.setUser(loggedInUser);
+            newCart.setProducts(cart.getProducts());
+
+            cartRepo.save(newCart);
+        }
     }
 }
